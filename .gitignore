@@ -1,0 +1,50 @@
+# build products...
+*.py[co]
+build
+__pycache__
+*.pyc
+
+# Backup/swap files...
+*~
+*.bak
+.*.swp
+
+# Eclipse/PyDev stuff...
+.checkstyle
+.project
+.pydevproject
+.settings/
+.venv/
+.virtualenv/
+
+# Mac OS X stuff...
+.DS_Store
+
+# Sublime/VSCode/Idea stuff...
+*.sublime-project
+*.sublime-workspace
+.vscode
+.idea/
+
+# Ansible stuff...
+*.retry
+.*.swp
+
+# Molecule stuff
+molecule/*/.molecule/
+molecule/*/.pytest_cache/
+molecule/*/pytestdebug.log
+
+# Vagrant stuff
+.vagrant
+
+# Tox stuff
+.tox
+
+# Test kitchen
+.kitchen/
+.kitchen.local.yml
+
+# Ruby
+.bundle/
+vendor/

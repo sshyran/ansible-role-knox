@@ -1,0 +1,35 @@
+# Molecule managed
+
+# There are some tricks here which differs from Molecule's default
+# - Installing systemd-sysv
+# - Including centos/systemd image hack to enable systemd stuff on RHEL7 too. See source in https://github.com/CentOS/CentOS-Dockerfiles/blob/master/systemd/centos7/Dockerfile
+
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get upgrade -y && apt-get install -y python sudo bash ca-certificates && apt-get clean; \
+    elif [ $(command -v dnf) ]; then dnf makecache && dnf --assumeyes install python sudo python-devel python2-dnf bash && dnf clean all; \
+    elif [ $(command -v yum) ]; then yum makecache fast && yum update -y && yum remove -y subscription-manager && yum install -y python sudo yum-plugin-ovl bash systemd-sysv || true && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
+    elif [ $(command -v zypper) ]; then zypper refresh && zypper update -y && zypper install -y python sudo bash python-xml && zypper clean -a; \
+    elif [ $(command -v apk) ]; then apk update && apk add --no-cache python sudo bash ca-certificates; \
+    elif [ $(command -v xbps-install) ]; then xbps-install -Syu && xbps-install -y python sudo bash ca-certificates && xbps-remove -O; fi
+
+RUN if [ $(command -v systemctl)]; \
+    then \
+      (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+      rm -f /lib/systemd/system/multi-user.target.wants/*;\
+      rm -f /etc/systemd/system/*.wants/*;\
+      rm -f /lib/systemd/system/local-fs.target.wants/*; \
+      rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+      rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+      rm -f /lib/systemd/system/basic.target.wants/*; \
+      rm -f /lib/systemd/system/anaconda.target.wants/*; \
+    fi;
+
+{% if (("centos" in item.image|lower) or ("rhel" in item.image|lower)) and "6" not in item.image %}
+VOLUME [ "/sys/fs/cgroup" ]
+CMD [ "/usr/sbin/init" ]
+{% endif %}

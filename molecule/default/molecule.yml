@@ -1,0 +1,77 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  # CentOS 7
+  - name: molecule-template-centos7
+    image: geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible:latest
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+  # Ubuntu 18.04
+  - name: molecule-template-ubuntu18
+    image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu1804}-ansible:latest
+    privileged: true
+    pre_build_image: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+  # # RHEL
+  # - name: molecule-template-rhel6
+  #   image: registry.access.redhat.com/rhel6:6.9
+  # - name: molecule-template-rhel7
+  #   image: registry.access.redhat.com/rhel7:7.4
+  #   privileged: True
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: /usr/sbin/init
+  # # CentOS
+  # - name: molecule-template-centos7
+  #   image: centos:7
+  #   privileged: true
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
+  # # Debian
+  # - name: molecule-template-debian9-systemd
+  #   image: jrei/systemd-debian:9
+  #   privileged: True
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: /lib/systemd/systemd
+  # - name: molecule-template-debian10-systemd
+  #   image: jrei/systemd-debian:10
+  #   privileged: True
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: /lib/systemd/systemd
+  # # Ubuntu
+  # - name: molecule-template-ubuntu1604-systemd
+  #   image: jrei/systemd-ubuntu:16.04
+  #   privileged: True
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: /lib/systemd/systemd
+  # - name: molecule-template-ubuntu1804-systemd
+  #   image: jrei/systemd-ubuntu:18.04
+  #   privileged: True
+  #   volumes:
+  #     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  #   command: /lib/systemd/systemd
+provisioner:
+  name: ansible
+  log: true
+  lint:
+    name: ansible-lint
+scenario:
+  name: default
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

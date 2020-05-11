@@ -1,0 +1,16 @@
+---
+- name: Create the SKELETON_APPLICATION group
+  group:
+    name: "{{ SKELETON_APPLICATION_system_group }}"
+    state: present
+    system: true
+
+- name: Create the SKELETON_APPLICATION user
+  user:
+    name: "{{ SKELETON_APPLICATION_system_user }}"
+    groups: "{{ SKELETON_APPLICATION_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+    home: /

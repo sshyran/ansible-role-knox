@@ -1,0 +1,7 @@
+---
+- name: restart SKELETON_APPLICATION
+  become: true
+  systemd:
+    daemon_reload: true
+    name: SKELETON_APPLICATION
+    state: restarted

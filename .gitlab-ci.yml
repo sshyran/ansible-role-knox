@@ -1,0 +1,29 @@
+---
+image: docker:dind
+
+stages:
+  - requirements
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  GIT_STRATEGY: clone
+  GIT_SUBMODULE_STRATEGY: none
+  CI_DEBUG_TRACE: "false"
+
+before_script:
+  - nohup sh -c /usr/local/bin/dockerd-entrypoint.sh &
+  - sleep 2;
+
+molecule:
+  stage: test
+  tags:
+    - ansible
+    - docker
+    - privileged-runner
+  script:
+    - apk add --update python3 py-pip python3-dev gcc libc-dev libffi-dev openssl-dev linux-headers make git
+    - pip install tox
+    - tox

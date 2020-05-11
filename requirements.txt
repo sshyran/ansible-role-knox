@@ -1,0 +1,9 @@
+ansible>=2.5
+ansible-lint
+molecule>=2.15.0
+# https://github.com/ansible/ansible-lint/issues/509
+ruamel.yaml==0.15.100
+docker
+pytest~=5.0
+testinfra~=3.0
+jmespath

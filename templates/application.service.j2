@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=SKELETON_APPLICATION
+After=network-online.target
+
+[Service]
+Type=simple
+User={{ SKELETON_APPLICATION_system_user }}
+Group={{ SKELETON_APPLICATION_system_group }}
+ExecStart=/usr/local/bin/SKELETON_APPLICATION
+SyslogIdentifier=SKELETON_APPLICATION
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
